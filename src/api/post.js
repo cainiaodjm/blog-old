@@ -10,5 +10,16 @@ class Post {
       },
     });
   }
+
+  static getPostList(start = 0, count = 5) {
+    return axios.request({
+      url: '/v1/post/list',
+      method: 'get',
+      params: {
+        start,
+        count,
+      },
+    });
+  }
 }
 export default Post;

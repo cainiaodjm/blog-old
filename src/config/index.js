@@ -11,7 +11,7 @@ export default {
 
   baseUrl: {
     dev: 'http://localhost:17000',
-    pro: 'https://www.cainiaodjm.top:17000',
+    pro: 'https://www.cainiaodjm.top',
   },
 
 };
