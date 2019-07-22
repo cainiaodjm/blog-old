@@ -22,11 +22,13 @@
       </div>
     </div>
     <div class="page">
-      <div>
-        Older
+      <div :class="olderClass">
+        <a href="#" v-if="isOlder">Older</a>
+        <span v-else>Older</span>
       </div>
-      <div>
-        Newer
+      <div :class="newerClass">
+        <a href="#" v-if="isNewer">Newer</a>
+        <span v-else>Newer</span>
       </div>
     </div>
   </div>
@@ -41,9 +43,36 @@
       return {
         posts: [],
         loadingInstance: null,
+        offset:0,
+        count:5,
+        allCount:0
+        // isOlder:false,
+        // isNewer:true
       };
     },
     components: {},
+    computed:{
+      isOlder(){
+        return this.offset+this.count<this.allCount ? true : false
+      },
+      isNewer(){
+        return  this.offset===0 ? false : true
+      },
+      olderClass(){
+        return [
+          "older",
+          "page-item",
+
+        ]
+      },
+      newerClass(){
+        return [
+          "newer",
+          "page-item",
+          this.offset===0 ? "active":''
+        ]
+      }
+    },
     mounted() {
       this.loadingInstance = this.$loading({
         target: this.$refs.posts,
@@ -51,11 +80,12 @@
         text: 'Loading',
         customClass: 'loading-Class',
       });
-      Post.getPostList()
+      Post.getPostList(this.offset,this.count)
         .then((res) => {
           if (res.err_code === 0) {
             this.loadingInstance.close();
             this.posts = res.result.postList;
+            this.allCount=res.result.count
           }
         });
     },
@@ -64,6 +94,45 @@
 <style lang="less">
   .posts {
     height: 100%;
+  }
+  .page{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    .page-item{
+      display: flex;
+      justify-content: center;
+      height: 3rem;
+      align-items: center;
+      border: 1px solid #eee;
+      a{
+        color: inherit;
+      }
+      a:hover{
+        text-decoration: underline;
+        color: #ac4142;
+      }
+      &:last-child{
+        margin-right: -1px;
+      }
+
+    }
+
+    .older{
+
+      order: 1;
+      width: 50%;
+      border-top-right-radius: 4px;
+      border-bottom-right-radius: 4px;
+    }
+
+    .newer{
+      order: 0;
+      width: 50%;
+      border-top-left-radius: 4px;
+      border-bottom-left-radius: 4px;
+
+    }
   }
 
   .post {
@@ -104,7 +173,11 @@
         .tag{
           color: inherit;
           margin-right: .4em;
+          &:hover{
+            color: #ac4142;
+          }
         }
+
 
       }
 
