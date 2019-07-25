@@ -23,11 +23,11 @@
     </div>
     <div class="page">
       <div :class="olderClass">
-        <a href="#" v-if="isOlder">Older</a>
+        <a href="javascript:void(0)" v-if="isOlder" @click="handleOlder">Older</a>
         <span v-else>Older</span>
       </div>
       <div :class="newerClass">
-        <a href="#" v-if="isNewer">Newer</a>
+        <a href="javascript:void(0)" v-if="isNewer" @click="handleNewer">Newer</a>
         <span v-else>Newer</span>
       </div>
     </div>
@@ -43,34 +43,59 @@
       return {
         posts: [],
         loadingInstance: null,
-        offset:0,
-        count:5,
-        allCount:0
+        offset: 0,
+        count: 5,
+        allCount: 0
         // isOlder:false,
         // isNewer:true
       };
     },
     components: {},
-    computed:{
-      isOlder(){
-        return this.offset+this.count<this.allCount ? true : false
+    computed: {
+      isOlder() {
+        return this.offset + this.count < this.allCount ? true : false;
       },
-      isNewer(){
-        return  this.offset===0 ? false : true
+      isNewer() {
+        return this.offset === 0 ? false : true;
       },
-      olderClass(){
+      olderClass() {
         return [
-          "older",
-          "page-item",
+          'older',
+          'page-item',
 
-        ]
+        ];
       },
-      newerClass(){
+      newerClass() {
         return [
-          "newer",
-          "page-item",
-          this.offset===0 ? "active":''
-        ]
+          'newer',
+          'page-item',
+          this.isNewer ? 'active' : ''
+        ];
+      }
+    },
+    methods: {
+      handleOlder() {
+        this.offset = this.offset + this.count;
+
+        Post.getPostList(this.offset, this.count)
+          .then((res) => {
+            if (res.err_code === 0) {
+              this.loadingInstance.close();
+              this.posts = res.result.postList;
+              this.allCount = res.result.count;
+            }
+          });
+      },
+      handleNewer() {
+        this.offset=this.offset-this.count
+        Post.getPostList(this.offset, this.count)
+          .then((res) => {
+            if (res.err_code === 0) {
+              this.loadingInstance.close();
+              this.posts = res.result.postList;
+              this.allCount = res.result.count;
+            }
+          });
       }
     },
     mounted() {
@@ -80,12 +105,12 @@
         text: 'Loading',
         customClass: 'loading-Class',
       });
-      Post.getPostList(this.offset,this.count)
+      Post.getPostList(this.offset, this.count)
         .then((res) => {
           if (res.err_code === 0) {
             this.loadingInstance.close();
             this.posts = res.result.postList;
-            this.allCount=res.result.count
+            this.allCount = res.result.count;
           }
         });
     },
@@ -95,30 +120,39 @@
   .posts {
     height: 100%;
   }
-  .page{
+
+  .page {
     display: flex;
     justify-content: center;
     align-items: center;
-    .page-item{
+
+    .page-item {
       display: flex;
       justify-content: center;
       height: 3rem;
       align-items: center;
       border: 1px solid #eee;
-      a{
+
+      a {
         color: inherit;
       }
-      a:hover{
-        text-decoration: underline;
-        color: #ac4142;
+
+      &:hover {
+        a {
+          text-decoration: underline;
+          color: #ac4142;
+        }
+
+        background-color: #f5f5f5;
       }
-      &:last-child{
+
+      &:last-child {
         margin-right: -1px;
       }
 
     }
 
-    .older{
+    .older {
 
       order: 1;
       width: 50%;
@@ -126,7 +160,7 @@
       border-bottom-right-radius: 4px;
     }
 
-    .newer{
+    .newer {
       order: 0;
       width: 50%;
       border-top-left-radius: 4px;
@@ -154,6 +188,7 @@
       a {
         color: #ac4142;
       }
+
     }
 
     .post-date {
@@ -170,10 +205,11 @@
       .post-tag {
         color: #909090;
 
-        .tag{
+        .tag {
           color: inherit;
           margin-right: .4em;
-          &:hover{
+
+          &:hover {
             color: #ac4142;
           }
         }
