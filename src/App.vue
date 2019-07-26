@@ -1,5 +1,6 @@
 <template>
   <div id="app">
+    <global-components></global-components>
     <div class="sidebar">
       <div class="container sidebar-sticky">
         <div class="sidebar-about">
@@ -39,10 +40,26 @@
       </div>
     </div>
     <div class="rightbar">
+      <div class="user-module">
+        <div class="auth">
+          <div class="login">
+            <button @click="handleLogin">
+              登录
+            </button>
+          </div>
+          <div class="register">
+            <button>
+              注册
+            </button>
+          </div>
+
+        </div>
+      </div>
       <div class="tag-list">
-        <el-tag v-for="(tag,index) in tagList" class="tag-item" :key="index" color="">
-          {{tag.name}}
-        </el-tag>
+
+        <!--        <el-tag v-for="(tag,index) in tagList" class="tag-item" :key="index" color="">-->
+        <!--          {{tag.name}}-->
+        <!--        </el-tag>-->
       </div>
     </div>
     <div class="content container">
@@ -55,7 +72,7 @@
 </template>
 <script>
   import Typed from 'typed.js';
-
+  import GlobalComponents from './components/global-components'
   export default {
     data() {
       return {
@@ -101,9 +118,25 @@
         ],
       };
     },
+    methods:{
 
+      handleGlobalA(){
+        console.log('AA')
+      },
+      handleLogin(){
+        this.$bus.$emit('showAuth',true)
+      }
+    },
+
+    components:{
+      GlobalComponents
+    },
     mounted() {
+      console.log(this.$refs)
       console.log(this.tagList)
+      console.log(this.$bus);
+
+
       this.typed = new Typed(this.$refs.cainiaodjm, {
         strings: ['I\'m cainiaodjm'],
         typeSpeed: 30,
@@ -119,14 +152,32 @@
 </script>
 <style lang="less">
   @import "./assets/font-awesome/less/font-awesome.less";
-  .tag-list{
+
+  .tag-list {
     padding: .5em;
     display: flex;
     flex-wrap: wrap;
-    .tag-item{
+
+    .tag-item {
       margin-right: .5em;
       margin-bottom: .5em;
       cursor: pointer;
+    }
+  }
+
+  .user-module {
+    .auth {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      .login {
+        margin-right: .5rem;
+      }
+
+      .register {
+
+      }
     }
   }
 </style>

@@ -6,15 +6,21 @@
     <div class="post-detail" v-html="content"></div>
     <div class="comment-wrapper">
       <div class="title">评论</div>
-      <div class="comment-form" :class="{focused:focused===true}">
+      <div class="comment-form"  :class="{focused:focused===true || otherFocused===true}">
         <div class="avatar-box">
           <div class="avatar"></div>
 
         </div>
-        <div class="form-box">
+        <div class="form-box" @click="handleOtherFocus">
           <div class="input-box">
             <div class="auth-card">
-              <div class="rich-input empty" ref="commentInput"  @blur="handleBlur" @focus="handleFocus"  contenteditable="true" spellcheck="false" placeholder="输入评论">
+              <div class="rich-input"
+                   :class="{empty:commentContent.length>0 ? true:false}"
+                   @input="handleInput" ref="commentInput"
+                   @click="handleFocus"
+
+                   contenteditable="true" spellcheck="false"
+                   placeholder="输入评论...">
 
               </div>
 
@@ -43,18 +49,22 @@
   import highlight from 'highlight.js';
   import 'highlight.js/styles/dark.css';
   import Post from '@/api/post';
-
   export default {
     data() {
       return {
         id: '',
         content: '',
         focused: false,
+        otherFocused:false,
         commentContent:""
       };
     },
+
     methods:{
       handleFocus(){
+        if(this.focused){
+          return
+        }
         this.focused=true
       },
       handleBlur(){
@@ -63,12 +73,19 @@
       handleSubmit(){
         // console.log(this.$refs.commentInput)
         console.log(this.commentContent);
-      }
+      },
+      handleInput(e){
+        this.commentContent=e.target.innerText
+      },
+      handleOtherFocus(){
+        this.otherFocused=true
+        this.$refs.commentInput.focus()
+      },
+
     },
     computed:{
       isEmpty(){
-
-        return this.commentContent.length>0 ? false :true
+        return this.commentContent.length>0 ? true :false
       }
     },
     mounted() {
@@ -78,7 +95,6 @@
         .then((res) => {
           if (res.err_code === 0) {
             this.content = res.result.content;
-
             marked.setOptions({
               renderer: new marked.Renderer(),
               highlight(code, lang) {
@@ -208,15 +224,15 @@
               outline: none;
               min-height: 1.3em;
             }
-            .rich-input:not(".empty"):before{
-              display: none;
-            }
             .rich-input:before{
               content: attr(placeholder);
               position: absolute;
               opacity: .4;
               pointer-events: none;
               user-select: none;
+            }
+            .rich-input.empty:before{
+              display: none;
             }
           }
         }
