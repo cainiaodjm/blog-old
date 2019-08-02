@@ -1,6 +1,9 @@
 <template>
   <div id="app">
-    <global-components></global-components>
+    <global-components @login="login"
+                       :show-login="showLogin"
+                       @changeLoginOrRegister="changeLoginOrRegister">
+    </global-components>
     <div class="sidebar">
       <div class="container sidebar-sticky">
         <div class="sidebar-about">
@@ -77,6 +80,7 @@
     data() {
       return {
         typed: null,
+        showLogin:true,
         tagList: [
           {
             id: 1,
@@ -123,8 +127,15 @@
       handleGlobalA(){
         console.log('AA')
       },
+      login({userName,secret}){
+        console.log(userName)
+        console.log(secret)
+      },
       handleLogin(){
         this.$bus.$emit('showAuth',true)
+      },
+      changeLoginOrRegister(){
+        this.showLogin=!this.showLogin
       }
     },
 

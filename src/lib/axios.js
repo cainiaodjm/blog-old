@@ -1,6 +1,6 @@
 import axios from 'axios';
 import Config from '@/config';
-import Util from '@/lib/util';
+import {encode,getToken} from '@/lib/util';
 
 const baseURL = process.env.NODE_ENV === 'production'
   ? Config.baseUrl.pro
@@ -16,7 +16,7 @@ class HttpRequest {
       baseURL: this.baseUrl,
       headers: {
         'content-type': 'application/json',
-        Authorization: Util.encode(),
+        Authorization: encode(),
         // token: (getToken()===false)?'':getToken()
       },
     };
@@ -40,7 +40,7 @@ class HttpRequest {
       this.queue[url] = true;
 
       // eslint-disable-next-line no-param-reassign
-      config.headers.Authorization = Util.encode();
+      config.headers.Authorization = encode();
       return config;
     }, error => Promise.reject(error));
     // 响应拦截
