@@ -15,7 +15,7 @@
     "highlight.js": "^9.15.8",
     "js-base64": "^2.5.1",
     "js-cookie": "^2.2.0",
-    "marked": "^0.7.0",
+    "marked": "^4.0.10",
     "typed.js": "^2.0.10",
     "vue": "^2.6.10",
     "vue-router": "^3.0.3",
